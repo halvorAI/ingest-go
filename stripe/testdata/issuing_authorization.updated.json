@@ -1,0 +1,32 @@
+{
+  "id": "evt_1IA_updated",
+  "type": "issuing_authorization.updated",
+  "created": 1729161660,
+  "livemode": false,
+  "data": {
+    "object": {
+      "id": "iauth_1QxDeclined",
+      "object": "issuing.authorization",
+      "amount": 9900,
+      "currency": "usd",
+      "approved": false,
+      "status": "closed",
+      "merchant_data": {
+        "name": "Blocked Merchant",
+        "category_code": "7995",
+        "country": "US",
+        "network_id": "acq_blocked"
+      },
+      "card": {
+        "id": "ic_1QxCard",
+        "last4": "4242",
+        "brand": "visa",
+        "metadata": {
+          "halvor_agent_id": "agt_travel_12",
+          "halvor_owner_id": "own_u_4410",
+          "halvor_owner_type": "person"
+        }
+      }
+    }
+  }
+}

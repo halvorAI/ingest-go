@@ -1,0 +1,20 @@
+{
+  "id": "evt_1PI_capturable",
+  "type": "payment_intent.amount_capturable_updated",
+  "created": 1729165000,
+  "livemode": false,
+  "data": {
+    "object": {
+      "id": "pi_3QxAuthHold",
+      "object": "payment_intent",
+      "amount": 5000,
+      "currency": "usd",
+      "status": "requires_capture",
+      "metadata": {
+        "halvor_agent_id": "agt_travel_12",
+        "halvor_owner_id": "own_u_4410",
+        "halvor_owner_type": "person"
+      }
+    }
+  }
+}

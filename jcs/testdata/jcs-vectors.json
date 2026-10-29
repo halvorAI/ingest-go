@@ -1,0 +1,154 @@
+{
+  "numbers": [
+    {
+      "bits": "0000000000000000",
+      "expected": "0"
+    },
+    {
+      "bits": "8000000000000000",
+      "expected": "0"
+    },
+    {
+      "bits": "0000000000000001",
+      "expected": "5e-324"
+    },
+    {
+      "bits": "8000000000000001",
+      "expected": "-5e-324"
+    },
+    {
+      "bits": "7fefffffffffffff",
+      "expected": "1.7976931348623157e+308"
+    },
+    {
+      "bits": "ffefffffffffffff",
+      "expected": "-1.7976931348623157e+308"
+    },
+    {
+      "bits": "4340000000000000",
+      "expected": "9007199254740992"
+    },
+    {
+      "bits": "c340000000000000",
+      "expected": "-9007199254740992"
+    },
+    {
+      "bits": "4430000000000000",
+      "expected": "295147905179352830000"
+    },
+    {
+      "bits": "44b52d02c7e14af5",
+      "expected": "9.999999999999997e+22"
+    },
+    {
+      "bits": "44b52d02c7e14af6",
+      "expected": "1e+23"
+    },
+    {
+      "bits": "44b52d02c7e14af7",
+      "expected": "1.0000000000000001e+23"
+    },
+    {
+      "bits": "444b1ae4d6e2ef4e",
+      "expected": "999999999999999700000"
+    },
+    {
+      "bits": "444b1ae4d6e2ef4f",
+      "expected": "999999999999999900000"
+    },
+    {
+      "bits": "444b1ae4d6e2ef50",
+      "expected": "1e+21"
+    },
+    {
+      "bits": "3eb0c6f7a0b5ed8c",
+      "expected": "9.999999999999997e-7"
+    },
+    {
+      "bits": "3eb0c6f7a0b5ed8d",
+      "expected": "0.000001"
+    },
+    {
+      "bits": "41b3de4355555553",
+      "expected": "333333333.3333332"
+    },
+    {
+      "bits": "41b3de4355555554",
+      "expected": "333333333.33333325"
+    },
+    {
+      "bits": "41b3de4355555555",
+      "expected": "333333333.3333333"
+    },
+    {
+      "bits": "41b3de4355555556",
+      "expected": "333333333.3333334"
+    },
+    {
+      "bits": "41b3de4355555557",
+      "expected": "333333333.33333343"
+    },
+    {
+      "bits": "becbf647612f3696",
+      "expected": "-0.0000033333333333333333"
+    },
+    {
+      "bits": "43143ff3c1cb0959",
+      "expected": "1424953923781206.2"
+    },
+    {
+      "bits": "3ff0000000000000",
+      "expected": "1"
+    },
+    {
+      "bits": "4059000000000000",
+      "expected": "100"
+    },
+    {
+      "bits": "3fb999999999999a",
+      "expected": "0.1"
+    },
+    {
+      "bits": "3e7ad7f29abcaf48",
+      "expected": "1e-7"
+    },
+    {
+      "bits": "3eb0c6f7a0b5ed8e",
+      "expected": "0.0000010000000000000002"
+    },
+    {
+      "bits": "4415af1d78b58c40",
+      "expected": "100000000000000000000"
+    },
+    {
+      "bits": "7fe0000000000000",
+      "expected": "8.98846567431158e+307"
+    }
+  ],
+  "objects": [
+    {
+      "json": "{\"numbers\":[333333333.33333329,1E30,4.50,2e-3,0.000000000000000000000000001],\"string\":\"\\u20ac$\\u000F\\u000aA'\\u0042\\u0022\\u005c\\\\\\\"\\/\",\"literals\":[null,true,false]}",
+      "expected": "{\"literals\":[null,true,false],\"numbers\":[333333333.3333333,1e+30,4.5,0.002,1e-27],\"string\":\"€$\\u000f\\nA'B\\\"\\\\\\\\\\\"/\"}"
+    },
+    {
+      "json": "{\"\\u20ac\":\"Euro Sign\",\"\\r\":\"Carriage Return\",\"\\ufb33\":\"Hebrew Letter Dalet With Dagesh\",\"1\":\"One\",\"\\ud83d\\ude00\":\"Emoji: Grinning Face\",\"\\u0080\":\"Control\",\"\\u00f6\":\"Latin Small Letter O With Diaeresis\"}",
+      "expected": "{\"\\r\":\"Carriage Return\",\"1\":\"One\",\"\":\"Control\",\"ö\":\"Latin Small Letter O With Diaeresis\",\"€\":\"Euro Sign\",\"😀\":\"Emoji: Grinning Face\",\"דּ\":\"Hebrew Letter Dalet With Dagesh\"}"
+    },
+    {
+      "json": "{\"b\":[3,{\"z\":1,\"a\":[]}],\"a\":{},\"\":\"empty key\",\"A\":\"upper\"}",
+      "expected": "{\"\":\"empty key\",\"A\":\"upper\",\"a\":{},\"b\":[3,{\"a\":[],\"z\":1}]}"
+    },
+    {
+      "json": "{\"controls\":\"\\u0000\\u0001\\b\\t\\n\\u000b\\f\\r\\u001f\\u007f\",\"lone\":\"\\ud800x\\udfff\",\"quote\":\"say \\\"hi\\\"\"}",
+      "expected": "{\"controls\":\"\\u0000\\u0001\\b\\t\\n\\u000b\\f\\r\\u001f\",\"lone\":\"\\ud800x\\udfff\",\"quote\":\"say \\\"hi\\\"\"}"
+    },
+    {
+      "json": "[56,{\"d\":true,\"10\":null,\"1\":[]}]",
+      "expected": "[56,{\"1\":[],\"10\":null,\"d\":true}]"
+    },
+    {
+      "json": "{\"ints\":[0,-1,9007199254740991,-9007199254740991,100,1e2,-0]}",
+      "expected": "{\"ints\":[0,-1,9007199254740991,-9007199254740991,100,100,0]}"
+    }
+  ]
+}

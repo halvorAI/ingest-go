@@ -1,0 +1,25 @@
+{
+  "id": "evt_1PI_succeeded",
+  "type": "payment_intent.succeeded",
+  "created": 1729165212,
+  "livemode": false,
+  "data": {
+    "object": {
+      "id": "pi_3QxAbCdEfGhIjKlM",
+      "object": "payment_intent",
+      "amount": 41200,
+      "currency": "usd",
+      "description": "Return flight SFO-AUS",
+      "status": "succeeded",
+      "metadata": {
+        "halvor_agent_id": "agt_travel_12",
+        "halvor_owner_id": "own_u_4410",
+        "halvor_owner_type": "person",
+        "halvor_instruction_id": "ins_8890",
+        "shared_payment_token": "spt_1QxNoPqRsTuV"
+      },
+      "on_behalf_of": "acct_1Nw0rTh",
+      "transfer_data": { "destination": "acct_1Nw0rTh" }
+    }
+  }
+}

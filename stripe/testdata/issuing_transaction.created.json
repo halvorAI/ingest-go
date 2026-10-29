@@ -1,0 +1,32 @@
+{
+  "id": "evt_1IT_created",
+  "type": "issuing_transaction.created",
+  "created": 1729162200,
+  "livemode": false,
+  "data": {
+    "object": {
+      "id": "ipi_1QxCapture",
+      "object": "issuing.transaction",
+      "amount": -41200,
+      "currency": "usd",
+      "type": "capture",
+      "authorization": "iauth_1QxYz2AbCdEfGh",
+      "merchant_data": {
+        "name": "Example Airways",
+        "category_code": "4511",
+        "country": "US",
+        "network_id": "acq_000123456789"
+      },
+      "card": {
+        "id": "ic_1QxCard",
+        "last4": "4242",
+        "brand": "visa",
+        "metadata": {
+          "halvor_agent_id": "agt_travel_12",
+          "halvor_owner_id": "own_u_4410",
+          "halvor_owner_type": "person"
+        }
+      }
+    }
+  }
+}

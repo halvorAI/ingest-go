@@ -1,0 +1,10 @@
+# Test and coverage output
+*.test
+*.out
+coverage.*
+# Local environment
+.env
+.env.local
+# Editors
+.idea/
+.vscode/

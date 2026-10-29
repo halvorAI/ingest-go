@@ -1,0 +1,25 @@
+{
+  "id": "evt_1PI_failed",
+  "type": "payment_intent.payment_failed",
+  "created": 1729166412,
+  "livemode": false,
+  "data": {
+    "object": {
+      "id": "pi_3QxFailCardDeclined",
+      "object": "payment_intent",
+      "amount": 230000,
+      "currency": "usd",
+      "description": "Northwind Office Supply",
+      "status": "requires_payment_method",
+      "last_payment_error": {
+        "code": "card_declined",
+        "message": "Your card was declined."
+      },
+      "metadata": {
+        "halvor_agent_id": "agt_procure_03",
+        "halvor_owner_id": "own_acme_ltd"
+      },
+      "on_behalf_of": "acct_1Nw0rTh"
+    }
+  }
+}

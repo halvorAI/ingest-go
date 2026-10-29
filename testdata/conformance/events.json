@@ -1,0 +1,1839 @@
+{
+  "description": "APE v0.1 conformance cases. Every implementation must give each event the expected verdict. rule says why an invalid event fails: schema (the JSON Schema rejects it) or pan (schema-valid, but a free-text field holds a possible card number).",
+  "cases": [
+    {
+      "name": "stripe-settled-minimal",
+      "expect": "valid",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "x402-authorized-with-evidence",
+      "expect": "valid",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.authorized",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "x402-client"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "x402:eip155:8453:0x7d3c5e",
+          "rail": "x402",
+          "amount": {
+            "value": "10000",
+            "unit": "atomic",
+            "asset": {
+              "network": "eip155:8453",
+              "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "symbol": "USDC",
+              "decimals": 6
+            }
+          },
+          "status": "authorized",
+          "rail_ref": {
+            "scheme": "exact",
+            "network": "eip155:8453",
+            "nonce": "0x7d3c5e"
+          }
+        },
+        "payee": {
+          "type": "api_provider",
+          "name": "api.example",
+          "resource_url": "https://api.example/prices",
+          "wallet": {
+            "network": "eip155:8453",
+            "address": "0x209693Bc6afc0C5328bA36FaF03C514EF312287C"
+          }
+        },
+        "instrument": {
+          "type": "wallet",
+          "wallet": {
+            "network": "eip155:8453",
+            "address": "0x857b06519E91e3A54538791bDbb0E22373e36b66"
+          }
+        },
+        "evidence": [
+          {
+            "kind": "x402.payment_payload",
+            "format": "json",
+            "value": {
+              "x402Version": 2
+            },
+            "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "related": {
+          "previous_event_id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1V"
+        }
+      }
+    },
+    {
+      "name": "failed-with-reason",
+      "expect": "valid",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.failed",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "failed",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          },
+          "failure_reason": "card_declined"
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "evidence-by-uri",
+      "expect": "valid",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        },
+        "evidence": [
+          {
+            "kind": "stripe.object",
+            "format": "json",
+            "uri": "https://files.example/pi.json",
+            "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ]
+      }
+    },
+    {
+      "name": "identifier-passing-luhn-is-not-free-text",
+      "expect": "valid",
+      "note": "Card networks issue numeric ids; 123456789012347 passes the Luhn check and must not be rejected or redacted.",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "card",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "network_transaction_id": "123456789012347"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "rail-ref-integer-value",
+      "expect": "valid",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stablecoin",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "network": "eip155:1",
+            "tx_hash": "0xabc",
+            "log_index": 3
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "redacted-placeholder-in-free-text",
+      "expect": "valid",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Airways card [redacted:pan]"
+        }
+      }
+    },
+    {
+      "name": "short-digit-run-in-free-text",
+      "expect": "valid",
+      "note": "10 digits is too short to be a card number.",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          },
+          "description": "Order 1234567890 for 2 seats"
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "labels-open-keys",
+      "expect": "valid",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        },
+        "labels": {
+          "team": "travel",
+          "cost_center": "cc-41"
+        }
+      }
+    },
+    {
+      "name": "evidence-value-open-keys",
+      "expect": "valid",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        },
+        "evidence": [
+          {
+            "kind": "stripe.object",
+            "format": "json",
+            "value": {
+              "anything": {
+                "nested": [
+                  1,
+                  2
+                ]
+              }
+            },
+            "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown-top-level-field",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        },
+        "extra": 1
+      }
+    },
+    {
+      "name": "unknown-rail-ref-key",
+      "expect": "invalid",
+      "rule": "schema",
+      "note": "rail_ref keys are closed per rail.",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_1",
+            "nonce": "n"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "failed-without-reason",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "failed",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "missing-rail-ref",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled"
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "payee-without-name-wallet-or-id",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant"
+        }
+      }
+    },
+    {
+      "name": "decimal-amount",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41.20",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "amount-as-number",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": 41200,
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "lower-case-currency",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "usd"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "atomic-without-asset",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "1",
+            "unit": "atomic"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "unknown-event-type",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.approved",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "unknown-rail",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "paypal",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "date-time-without-offset",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "impossible-date",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-02-30T00:00:00Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "short-event-id",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_1",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "null-optional-field",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        },
+        "instruction": null
+      }
+    },
+    {
+      "name": "evidence-with-value-and-uri",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        },
+        "evidence": [
+          {
+            "kind": "stripe.object",
+            "format": "json",
+            "value": {},
+            "uri": "https://files.example/a",
+            "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ]
+      }
+    },
+    {
+      "name": "evidence-bad-digest",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        },
+        "evidence": [
+          {
+            "kind": "stripe.object",
+            "format": "json",
+            "value": {},
+            "sha256": "sha256:ABC"
+          }
+        ]
+      }
+    },
+    {
+      "name": "too-many-labels",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        },
+        "labels": {
+          "k0": "v",
+          "k1": "v",
+          "k2": "v",
+          "k3": "v",
+          "k4": "v",
+          "k5": "v",
+          "k6": "v",
+          "k7": "v",
+          "k8": "v",
+          "k9": "v",
+          "k10": "v",
+          "k11": "v",
+          "k12": "v",
+          "k13": "v",
+          "k14": "v",
+          "k15": "v",
+          "k16": "v",
+          "k17": "v",
+          "k18": "v",
+          "k19": "v",
+          "k20": "v"
+        }
+      }
+    },
+    {
+      "name": "bad-country-code",
+      "expect": "invalid",
+      "rule": "schema",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "usa"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "pan-in-payee-name",
+      "expect": "invalid",
+      "rule": "pan",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Airways 4242424242424242"
+        }
+      }
+    },
+    {
+      "name": "pan-with-spaces-in-description",
+      "expect": "invalid",
+      "rule": "pan",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          },
+          "description": "Paid with 4242 4242 4242 4242"
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "pan-with-dashes-in-failure-reason",
+      "expect": "invalid",
+      "rule": "pan",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.failed",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "failed",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          },
+          "failure_reason": "declined 4242-4242-4242-4242"
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "pan-in-category",
+      "expect": "invalid",
+      "rule": "pan",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          },
+          "category": "4242424242424242"
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "pan-in-instruction-summary",
+      "expect": "invalid",
+      "rule": "pan",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        },
+        "instruction": {
+          "id": "ins_1",
+          "hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "summary": "Use card 4242424242424242"
+        }
+      }
+    },
+    {
+      "name": "pan-in-agent-name",
+      "expect": "invalid",
+      "rule": "pan",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "agent 4242424242424242"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "pan-in-owner-display-name",
+      "expect": "invalid",
+      "rule": "pan",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US",
+          "display_name": "Jo 4242424242424242"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        }
+      }
+    },
+    {
+      "name": "pan-in-payee-website",
+      "expect": "invalid",
+      "rule": "pan",
+      "note": "New in this revision: URLs are free text.",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways",
+          "website": "https://shop.example/pay?card=4242424242424242"
+        }
+      }
+    },
+    {
+      "name": "pan-in-payee-resource-url",
+      "expect": "invalid",
+      "rule": "pan",
+      "note": "New in this revision: URLs are free text.",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways",
+          "resource_url": "https://api.example/r/4242424242424242"
+        }
+      }
+    },
+    {
+      "name": "pan-in-label-value",
+      "expect": "invalid",
+      "rule": "pan",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        },
+        "labels": {
+          "note": "card 4242424242424242"
+        }
+      }
+    },
+    {
+      "name": "pan-in-label-key",
+      "expect": "invalid",
+      "rule": "pan",
+      "note": "New in this revision: label keys are free text.",
+      "event": {
+        "ape_version": "0.1",
+        "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+        "type": "payment.settled",
+        "occurred_at": "2026-10-17T09:14:03.218Z",
+        "environment": "test",
+        "source": {
+          "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+          "sdk": "conformance",
+          "adapter": "custom"
+        },
+        "agent": {
+          "id": "agt_travel_12",
+          "name": "Travel booking agent"
+        },
+        "owner": {
+          "id": "own_u_4410",
+          "type": "person",
+          "country": "US"
+        },
+        "payment": {
+          "payment_id": "pi_3QxAbCdEfGhIjKlM",
+          "rail": "stripe",
+          "amount": {
+            "value": "41200",
+            "unit": "minor",
+            "currency": "USD"
+          },
+          "status": "settled",
+          "rail_ref": {
+            "payment_intent": "pi_3QxAbCdEfGhIjKlM"
+          }
+        },
+        "payee": {
+          "type": "merchant",
+          "name": "Example Airways"
+        },
+        "labels": {
+          "4242424242424242": "note"
+        }
+      }
+    }
+  ]
+}

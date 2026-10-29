@@ -1,0 +1,22 @@
+{
+  "id": "evt_1DP_created",
+  "type": "charge.dispute.created",
+  "created": 1729168000,
+  "livemode": false,
+  "data": {
+    "object": {
+      "id": "dp_1QxDispute",
+      "object": "dispute",
+      "amount": 41200,
+      "currency": "usd",
+      "reason": "fraudulent",
+      "charge": "ch_3QxRefunded",
+      "payment_intent": "pi_3QxAbCdEfGhIjKlM",
+      "metadata": {
+        "halvor_agent_id": "agt_travel_12",
+        "halvor_owner_id": "own_u_4410",
+        "halvor_owner_type": "person"
+      }
+    }
+  }
+}

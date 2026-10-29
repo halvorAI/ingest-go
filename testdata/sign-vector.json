@@ -1,0 +1,109 @@
+{
+  "description": "Cross-language APE detached JWS vector (P1.3 / P3.7). Sign JCS bytes with Ed25519; compact JWS with empty payload.",
+  "event": {
+    "ape_version": "0.1",
+    "id": "evt_01JA8Q4K3T9V2C7M5N6P8R0S1W",
+    "type": "payment.settled",
+    "occurred_at": "2026-10-17T09:14:03.218Z",
+    "environment": "test",
+    "source": {
+      "id": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F",
+      "sdk": "@halvorai/ingest@0.1.0",
+      "adapter": "x402-client"
+    },
+    "agent": {
+      "id": "agt_research_07",
+      "name": "Market research agent",
+      "framework": "openai-agents",
+      "version": "2026.10.2",
+      "key_thumbprint": "NzbLsXh8uDCcd-6MNwXF4W_7noWXFZAfHkxZsRGC9Xs"
+    },
+    "owner": {
+      "id": "own_acme_ltd",
+      "type": "business",
+      "display_name": "Acme Analytics Ltd",
+      "country": "US",
+      "kyc_ref": "kyb_88231"
+    },
+    "instruction": {
+      "id": "ins_5521",
+      "hash": "sha256:f755e5bdab5721af297a47e30692f0b50c4abd68e52f711e1fe8b970aa4e5890",
+      "summary": "Pull the latest EU power prices and summarise.",
+      "channel": "chat",
+      "issued_at": "2026-10-17T09:13:41.002Z",
+      "tool_call_id": "call_x2b9"
+    },
+    "payment": {
+      "payment_id": "x402:eip155:8453:0xf3746613c2d920b5fdabc0856f2aeb2d4f88ee6037b8cc5d04a71a4462f13480",
+      "rail": "x402",
+      "amount": {
+        "value": "10000",
+        "unit": "atomic",
+        "asset": {
+          "network": "eip155:8453",
+          "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "symbol": "USDC",
+          "decimals": 6
+        }
+      },
+      "status": "settled",
+      "description": "Premium market data, 1 request",
+      "rail_ref": {
+        "scheme": "exact",
+        "network": "eip155:8453",
+        "nonce": "0xf3746613c2d920b5fdabc0856f2aeb2d4f88ee6037b8cc5d04a71a4462f13480",
+        "tx_hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "facilitator": "https://x402.org/facilitator",
+        "payment_flow": "authorization"
+      }
+    },
+    "payee": {
+      "type": "api_provider",
+      "name": "Example Market Data",
+      "wallet": {
+        "network": "eip155:8453",
+        "address": "0x209693Bc6afc0C5328bA36FaF03C514EF312287C"
+      },
+      "resource_url": "https://api.example.com/premium-data"
+    },
+    "instrument": {
+      "type": "wallet",
+      "wallet": {
+        "network": "eip155:8453",
+        "address": "0x857b06519E91e3A54538791bDbb0E22373e36b66"
+      }
+    },
+    "evidence": [
+      {
+        "kind": "x402.settlement",
+        "format": "json",
+        "value": {
+          "success": true,
+          "transaction": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+          "network": "eip155:8453",
+          "payer": "0x857b06519E91e3A54538791bDbb0E22373e36b66"
+        },
+        "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    ],
+    "related": {
+      "previous_event_id": "evt_01JA8Q4JZ0B1C2D3E4F5G6H7J8",
+      "session_id": "ses_9f2"
+    }
+  },
+  "private_jwk": {
+    "crv": "Ed25519",
+    "d": "ZQ_YAuffmJz4_nqhgfpBGTxT7xOvtskmSW6MkRJm3dw",
+    "x": "Kz2Ad8JG2VeShi3vCFgk0F-p48AeKqUqbn09wKSXedc",
+    "kty": "OKP",
+    "kid": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F"
+  },
+  "public_jwk": {
+    "crv": "Ed25519",
+    "x": "Kz2Ad8JG2VeShi3vCFgk0F-p48AeKqUqbn09wKSXedc",
+    "kty": "OKP",
+    "kid": "src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F"
+  },
+  "canonical_jcs": "{\"agent\":{\"framework\":\"openai-agents\",\"id\":\"agt_research_07\",\"key_thumbprint\":\"NzbLsXh8uDCcd-6MNwXF4W_7noWXFZAfHkxZsRGC9Xs\",\"name\":\"Market research agent\",\"version\":\"2026.10.2\"},\"ape_version\":\"0.1\",\"environment\":\"test\",\"evidence\":[{\"format\":\"json\",\"kind\":\"x402.settlement\",\"sha256\":\"sha256:0000000000000000000000000000000000000000000000000000000000000000\",\"value\":{\"network\":\"eip155:8453\",\"payer\":\"0x857b06519E91e3A54538791bDbb0E22373e36b66\",\"success\":true,\"transaction\":\"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef\"}}],\"id\":\"evt_01JA8Q4K3T9V2C7M5N6P8R0S1W\",\"instruction\":{\"channel\":\"chat\",\"hash\":\"sha256:f755e5bdab5721af297a47e30692f0b50c4abd68e52f711e1fe8b970aa4e5890\",\"id\":\"ins_5521\",\"issued_at\":\"2026-10-17T09:13:41.002Z\",\"summary\":\"Pull the latest EU power prices and summarise.\",\"tool_call_id\":\"call_x2b9\"},\"instrument\":{\"type\":\"wallet\",\"wallet\":{\"address\":\"0x857b06519E91e3A54538791bDbb0E22373e36b66\",\"network\":\"eip155:8453\"}},\"occurred_at\":\"2026-10-17T09:14:03.218Z\",\"owner\":{\"country\":\"US\",\"display_name\":\"Acme Analytics Ltd\",\"id\":\"own_acme_ltd\",\"kyc_ref\":\"kyb_88231\",\"type\":\"business\"},\"payee\":{\"name\":\"Example Market Data\",\"resource_url\":\"https://api.example.com/premium-data\",\"type\":\"api_provider\",\"wallet\":{\"address\":\"0x209693Bc6afc0C5328bA36FaF03C514EF312287C\",\"network\":\"eip155:8453\"}},\"payment\":{\"amount\":{\"asset\":{\"address\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"decimals\":6,\"network\":\"eip155:8453\",\"symbol\":\"USDC\"},\"unit\":\"atomic\",\"value\":\"10000\"},\"description\":\"Premium market data, 1 request\",\"payment_id\":\"x402:eip155:8453:0xf3746613c2d920b5fdabc0856f2aeb2d4f88ee6037b8cc5d04a71a4462f13480\",\"rail\":\"x402\",\"rail_ref\":{\"facilitator\":\"https://x402.org/facilitator\",\"network\":\"eip155:8453\",\"nonce\":\"0xf3746613c2d920b5fdabc0856f2aeb2d4f88ee6037b8cc5d04a71a4462f13480\",\"payment_flow\":\"authorization\",\"scheme\":\"exact\",\"tx_hash\":\"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef\"},\"status\":\"settled\"},\"related\":{\"previous_event_id\":\"evt_01JA8Q4JZ0B1C2D3E4F5G6H7J8\",\"session_id\":\"ses_9f2\"},\"source\":{\"adapter\":\"x402-client\",\"id\":\"src_01JA8P0Z6X1Y2Z3A4B5C6D7E8F\",\"sdk\":\"@halvorai/ingest@0.1.0\"},\"type\":\"payment.settled\"}",
+  "sig": "eyJhbGciOiJFZERTQSIsImtpZCI6InNyY18wMUpBOFAwWjZYMVkyWjNBNEI1QzZEN0U4RiIsInR5cCI6ImFwZStqd3MiLCJhcGUiOiIwLjEifQ..-low0vAGf3Dk40LOM6JTW2eG1RFbSmQcTzV7vdnItiouUdI920fz_vpP3LP9EXEKYzUaWi-bf5ffsTCkinUrAA"
+}

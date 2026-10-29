@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      matrix:
+        go: ['1.22', 'stable']
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+      - run: go vet ./...
+      - name: gofmt
+        if: matrix.os == 'ubuntu-latest'
+        run: test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
+      - name: Test (race detector on Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: go test -race ./...
+      - name: Test
+        if: matrix.os != 'ubuntu-latest'
+        run: go test ./...
