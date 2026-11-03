@@ -1,0 +1,51 @@
+# Proposes documentation updates in the private halvorai-brain repository.
+# Disabled until BRAIN_SYNC_ENABLED is set to "true" in Actions variables.
+# Uses the workflow on the default branch: no PR code is checked out/executed.
+name: Notify HalvorAI Brain
+
+on:
+  pull_request_target:
+    types: [closed]
+
+permissions:
+  contents: read
+
+jobs:
+  notify-brain:
+    if: >-
+      ${{ github.event.pull_request.merged == true &&
+          github.event.pull_request.base.ref == github.event.repository.default_branch &&
+          vars.BRAIN_SYNC_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Create short-lived token for Brain only
+        id: brain-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.BRAIN_APP_CLIENT_ID }}
+          private-key: ${{ secrets.BRAIN_APP_PRIVATE_KEY }}
+          owner: halvorAI
+          repositories: halvorai-brain
+          permission-contents: write
+
+      - name: Notify Brain about merged PR
+        env:
+          GH_TOKEN: ${{ steps.brain-token.outputs.token }}
+          SOURCE_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          jq -n \
+            --arg repo "$SOURCE_REPO" \
+            --argjson pr "$PR_NUMBER" \
+            --arg sha "$MERGE_SHA" \
+            '{
+              event_type: "product-pr-merged",
+              client_payload: {
+                repository: $repo,
+                pr_number: $pr,
+                merge_sha: $sha
+              }
+            }' |
+          gh api -X POST repos/halvorAI/halvorai-brain/dispatches --input -
