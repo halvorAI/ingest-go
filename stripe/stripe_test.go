@@ -168,3 +168,43 @@ func TestTagMetadata(t *testing.T) {
 		t.Fatalf("got %v", got)
 	}
 }
+
+func TestCardMetadataCarriesTheAgentNameAndFramework(t *testing.T) {
+	raw := strings.Replace(string(fixture(t, "issuing_authorization.created.json")),
+		`"halvor_agent_id": "agt_travel_12",`,
+		`"halvor_agent_id": "agt_travel_12", "halvor_agent_name": "Travel booking agent", "halvor_agent_framework": "errandly-agents",`, 1)
+	m, err := MapEvent([]byte(raw))
+	if err != nil || m == nil {
+		t.Fatal(m, err)
+	}
+	agent := m["agent"].(map[string]any)
+	if agent["id"] != "agt_travel_12" || agent["name"] != "Travel booking agent" || agent["framework"] != "errandly-agents" {
+		t.Fatalf("agent %v", agent)
+	}
+	if plain := mustMap(t, "issuing_authorization.created.json")["agent"].(map[string]any); len(plain) != 1 {
+		t.Fatalf("without the keys the agent is id only: %v", plain)
+	}
+}
+
+func TestTagMetadataStoresTheAgentNameAndFrameworkWithinTheAPELimits(t *testing.T) {
+	ctx := ingest.WithAgentContext(context.Background(), ingest.AgentContext{
+		Agent: &ingest.Agent{ID: "agt_ctx", Name: "Shopping agent", Framework: "errandly-agents"},
+		Owner: &ingest.Owner{ID: "own_ctx", Type: "business"},
+	})
+	got := TagMetadata(ctx, nil, TagOverrides{})
+	if got[MetaAgentID] != "agt_ctx" || got[MetaAgentName] != "Shopping agent" || got[MetaAgentFramework] != "errandly-agents" {
+		t.Fatalf("got %v", got)
+	}
+	long := TagMetadata(context.Background(), nil, TagOverrides{AgentID: "agt_x", AgentName: strings.Repeat("n", 300), Framework: strings.Repeat("f", 100)})
+	if len(long[MetaAgentName]) != 128 || len(long[MetaAgentFramework]) != 64 {
+		t.Fatalf("not cut to the APE limits: %d %d", len(long[MetaAgentName]), len(long[MetaAgentFramework]))
+	}
+	for k := range long {
+		if len(k) > 40 {
+			t.Fatalf("Stripe metadata keys are at most 40 characters: %s", k)
+		}
+	}
+	if none := TagMetadata(context.Background(), nil, TagOverrides{AgentID: "agt_y"}); none[MetaAgentName] != "" || len(none) != 1 {
+		t.Fatalf("empty name and framework are not written: %v", none)
+	}
+}

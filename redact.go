@@ -10,7 +10,6 @@ var (
 	rePEMPrivate = regexp.MustCompile(`-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z0-9 ]*PRIVATE KEY-----`)
 	reJWKD       = regexp.MustCompile(`"d"\s*:\s*"[^"]*"`)
 	reCVC        = regexp.MustCompile(`(?i)\b(cvc|cvv2?|security code)("\s*:\s*"|\s*[:=]\s*|\s+)(\d{3,4})(")?`)
-	rePANRun     = regexp.MustCompile(`\d(?:[ -]?\d)*`)
 )
 
 // RedactPattern is an extra pattern for [Config.RedactPatterns]. Matches are replaced with
@@ -41,15 +40,83 @@ func panDigits(run string) (string, bool) {
 	return digits, len(digits) >= 13 && len(digits) <= 19 && luhnValid(digits)
 }
 
+func isDigit(b byte) bool { return b >= '0' && b <= '9' }
+
+func isAlnum(b byte) bool {
+	return isDigit(b) || (b >= 'A' && b <= 'Z') || (b >= 'a' && b <= 'z')
+}
+
+// panRuns returns the [start, end) spans of digit runs that may be card numbers: digits with
+// single spaces or dashes between them, not glued to a letter or digit on either side. Digits
+// inside a hex signature, a base64 value or an id sit next to letters and are not a card number.
+// It matches /(?<![0-9A-Za-z])\d(?:[ -]?\d)*(?![0-9A-Za-z])/g in the Node.js and Python SDKs
+// (Go's regexp has no lookaround).
+func panRuns(text string) [][2]int {
+	var spans [][2]int
+	for i := 0; i < len(text); {
+		if !isDigit(text[i]) || (i > 0 && isAlnum(text[i-1])) {
+			i++
+			continue
+		}
+		// Extend greedily, then keep the longest end that is not followed by a letter or digit.
+		best, pos := -1, i
+		for {
+			end := pos + 1
+			if end == len(text) || !isAlnum(text[end]) {
+				best = end
+			}
+			switch {
+			case end < len(text) && isDigit(text[end]):
+				pos = end
+				continue
+			case end+1 < len(text) && (text[end] == ' ' || text[end] == '-') && isDigit(text[end+1]):
+				pos = end + 1
+				continue
+			}
+			break
+		}
+		if best < 0 {
+			i++
+			continue
+		}
+		spans = append(spans, [2]int{i, best})
+		i = best
+	}
+	return spans
+}
+
 // ContainsPAN reports whether text holds a card number: a Luhn-valid run of 13 to 19 digits,
-// with single spaces or dashes allowed between digits. This is the APE card-number rule.
+// with single spaces or dashes allowed between digits, not glued to letters or more digits.
+// This is the APE card-number rule.
 func ContainsPAN(text string) bool {
-	for _, run := range rePANRun.FindAllString(text, -1) {
-		if _, ok := panDigits(run); ok {
+	for _, span := range panRuns(text) {
+		if _, ok := panDigits(text[span[0]:span[1]]); ok {
 			return true
 		}
 	}
 	return false
+}
+
+func redactPAN(text string) string {
+	spans := panRuns(text)
+	if len(spans) == 0 {
+		return text
+	}
+	var b strings.Builder
+	last := 0
+	for _, span := range spans {
+		if _, ok := panDigits(text[span[0]:span[1]]); !ok {
+			continue
+		}
+		b.WriteString(text[last:span[0]])
+		b.WriteString("[redacted:pan]")
+		last = span[1]
+	}
+	if last == 0 {
+		return text
+	}
+	b.WriteString(text[last:])
+	return b.String()
 }
 
 // RedactText removes card numbers, CVCs, API and secret keys and private keys from free text.
@@ -57,12 +124,7 @@ func RedactText(text string, extra ...RedactPattern) string {
 	out := rePEMPrivate.ReplaceAllString(text, "[redacted:private-key]")
 	out = reSecretKey.ReplaceAllString(out, "[redacted:secret-key]")
 	out = reJWKD.ReplaceAllString(out, `"d":"[redacted:private-key]"`)
-	out = rePANRun.ReplaceAllStringFunc(out, func(run string) string {
-		if _, ok := panDigits(run); ok {
-			return "[redacted:pan]"
-		}
-		return run
-	})
+	out = redactPAN(out)
 	out = reCVC.ReplaceAllString(out, "${1}${2}[redacted:cvc]${4}")
 	for _, p := range extra {
 		if p.Pattern == nil {

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Card-number redaction and the card-number check skip digit runs inside hex, base64 and ids, as in the Node.js and Python SDKs, and `x402.payment_payload` evidence is no longer redacted. Parts of x402 signatures were replaced with `[redacted:pan]`, which then failed verification and raised a false `evidence_invalid` alert.
+- `stripe`: `TagMetadata` writes `halvor_agent_name` and `halvor_agent_framework` (cut to 128 and 64 characters), and the mapper reads them, so card payments show the agent's name. `TagOverrides` has `AgentName` and `Framework`.
+
 ## 0.1.0 (developer preview)
 
 - `Client`: validates, redacts, signs (EdDSA, detached JWS over RFC 8785) and delivers Agent Payment Events in batches from a background goroutine. `Emit` never fails, panics or waits for I/O.
