@@ -10,7 +10,6 @@ var (
 	rePEMPrivate = regexp.MustCompile(`-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z0-9 ]*PRIVATE KEY-----`)
 	reJWKD       = regexp.MustCompile(`"d"\s*:\s*"[^"]*"`)
 	reCVC        = regexp.MustCompile(`(?i)\b(cvc|cvv2?|security code)("\s*:\s*"|\s*[:=]\s*|\s+)(\d{3,4})(")?`)
-	rePANRun     = regexp.MustCompile(`\d(?:[ -]?\d)*`)
 )
 
 // RedactPattern is an extra pattern for [Config.RedactPatterns]. Matches are replaced with
@@ -42,14 +41,82 @@ func panDigits(run string) (string, bool) {
 }
 
 // ContainsPAN reports whether text holds a card number: a Luhn-valid run of 13 to 19 digits,
-// with single spaces or dashes allowed between digits. This is the APE card-number rule.
+// with single spaces or dashes allowed between digits. This is the APE card-number rule. Digits
+// glued to letters or other digits (hex signatures, base64, ids) are not a card number.
 func ContainsPAN(text string) bool {
-	for _, run := range rePANRun.FindAllString(text, -1) {
+	found := false
+	scanPANRuns(text, func(_, _ int, run string) bool {
 		if _, ok := panDigits(run); ok {
-			return true
+			found = true
+			return false
 		}
+		return true
+	})
+	return found
+}
+
+func isASCIIDigit(b byte) bool { return b >= '0' && b <= '9' }
+
+func isASCIIAlnum(b byte) bool {
+	return isASCIIDigit(b) || (b >= 'A' && b <= 'Z') || (b >= 'a' && b <= 'z')
+}
+
+// scanPANRuns calls fn for each candidate card-number run, left to right, as the Node.js and
+// Python SDKs find them with /(?<![0-9A-Za-z])\d(?:[ -]?\d)*(?![0-9A-Za-z])/: a run must not
+// touch an ASCII letter or digit on either side; when the longest run does, shorter runs ending
+// at a digit followed by a space or dash are tried. fn returns false to stop.
+func scanPANRuns(text string, fn func(start, end int, run string) bool) {
+	for i := 0; i < len(text); {
+		if !isASCIIDigit(text[i]) || (i > 0 && isASCIIAlnum(text[i-1])) {
+			i++
+			continue
+		}
+		// Possible ends (exclusive) of \d(?:[ -]?\d)* starting at i, shortest first.
+		ends := []int{i + 1}
+		for j := i + 1; ; {
+			if j < len(text) && isASCIIDigit(text[j]) {
+				j++
+			} else if j+1 < len(text) && (text[j] == ' ' || text[j] == '-') && isASCIIDigit(text[j+1]) {
+				j += 2
+			} else {
+				break
+			}
+			ends = append(ends, j)
+		}
+		matched := -1
+		for k := len(ends) - 1; k >= 0; k-- {
+			if e := ends[k]; e == len(text) || !isASCIIAlnum(text[e]) {
+				matched = e
+				break
+			}
+		}
+		if matched < 0 {
+			i++
+			continue
+		}
+		if !fn(i, matched, text[i:matched]) {
+			return
+		}
+		i = matched
 	}
-	return false
+}
+
+func redactPANs(text string) string {
+	var b strings.Builder
+	last := 0
+	scanPANRuns(text, func(start, end int, run string) bool {
+		if _, ok := panDigits(run); ok {
+			b.WriteString(text[last:start])
+			b.WriteString("[redacted:pan]")
+			last = end
+		}
+		return true
+	})
+	if last == 0 {
+		return text
+	}
+	b.WriteString(text[last:])
+	return b.String()
 }
 
 // RedactText removes card numbers, CVCs, API and secret keys and private keys from free text.
@@ -57,12 +124,7 @@ func RedactText(text string, extra ...RedactPattern) string {
 	out := rePEMPrivate.ReplaceAllString(text, "[redacted:private-key]")
 	out = reSecretKey.ReplaceAllString(out, "[redacted:secret-key]")
 	out = reJWKD.ReplaceAllString(out, `"d":"[redacted:private-key]"`)
-	out = rePANRun.ReplaceAllStringFunc(out, func(run string) string {
-		if _, ok := panDigits(run); ok {
-			return "[redacted:pan]"
-		}
-		return run
-	})
+	out = redactPANs(out)
 	out = reCVC.ReplaceAllString(out, "${1}${2}[redacted:cvc]${4}")
 	for _, p := range extra {
 		if p.Pattern == nil {

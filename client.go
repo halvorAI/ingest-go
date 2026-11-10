@@ -18,7 +18,7 @@ import (
 )
 
 // Version is the SDK version, reported in every event's source.sdk.
-const Version = "0.1.0"
+const Version = "0.1.1"
 
 // SDKName is the value of source.sdk in every event.
 const SDKName = "go.halvorai.com/ingest@" + Version
@@ -505,6 +505,10 @@ func buildInstruction(raw map[string]any) map[string]any {
 	return out
 }
 
+// signedJSONEvidence are evidence kinds whose value carries its own signature; redacting them
+// would break that signature, as in the Node.js and Python SDKs.
+var signedJSONEvidence = map[string]bool{"x402.payment_payload": true}
+
 func (c *Client) redactEvent(event map[string]any) {
 	extra := c.cfg.RedactPatterns
 	redactField := func(obj map[string]any, key string) {
@@ -533,6 +537,10 @@ func (c *Client) redactEvent(event map[string]any) {
 		for _, item := range evidence {
 			e := asMap(item)
 			if e == nil || e["format"] != "json" {
+				continue
+			}
+			if kind, _ := e["kind"].(string); signedJSONEvidence[kind] {
+				// A signed payload is evidence only while byte-identical.
 				continue
 			}
 			if value, ok := e["value"]; ok && value != nil {

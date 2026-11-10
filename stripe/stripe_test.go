@@ -2,6 +2,7 @@ package stripe
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -166,5 +167,41 @@ func TestTagMetadata(t *testing.T) {
 	got = TagMetadata(ctx, nil, TagOverrides{AgentID: "agt_override"})
 	if got[MetaAgentID] != "agt_override" || got[MetaOwnerID] != "own_ctx_1" {
 		t.Fatalf("got %v", got)
+	}
+}
+
+func TestCardAgentsCarryTheirNames(t *testing.T) {
+	ctx := ingest.WithAgentContext(context.Background(), ingest.AgentContext{
+		Agent: &ingest.Agent{ID: "agt_card_1", Name: "Office supplies agent", Framework: "errandly-agents"},
+		Owner: &ingest.Owner{ID: "own_1", Type: "business"},
+	})
+	meta := TagMetadata(ctx, nil, TagOverrides{})
+	if meta[MetaAgentName] != "Office supplies agent" || meta[MetaAgentFramework] != "errandly-agents" {
+		t.Fatalf("got %v", meta)
+	}
+	meta = TagMetadata(context.Background(), nil, TagOverrides{AgentID: "agt_2", AgentName: strings.Repeat("n", 200), Framework: "f"})
+	if len(meta[MetaAgentName]) != 128 || meta[MetaAgentFramework] != "f" {
+		t.Fatalf("got %v", meta)
+	}
+	m := map[string]any{}
+	for k, v := range meta {
+		m[k] = v
+	}
+	object, _ := json.Marshal(map[string]any{
+		"id": "iauth_1", "amount": 2400, "currency": "usd", "approved": true,
+		"card":          map[string]any{"id": "ic_1", "last4": "4242", "brand": "Visa", "metadata": m},
+		"merchant_data": map[string]any{"name": "Northwind", "category_code": "5943", "country": "US"},
+	})
+	mapped, err := MapObject("issuing_authorization.created", 1, object)
+	if err != nil {
+		t.Fatal(err)
+	}
+	agent := mapped["agent"].(map[string]any)
+	if agent["id"] != "agt_2" || len(agent["name"].(string)) != 128 || agent["framework"] != "f" {
+		t.Fatalf("agent %v", agent)
+	}
+	unnamed := mustMap(t, "unattributed.json")["agent"].(map[string]any)
+	if _, has := unnamed["name"]; has {
+		t.Fatalf("unattributed agent has a name: %v", unnamed)
 	}
 }

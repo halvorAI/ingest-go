@@ -45,10 +45,12 @@ var HandledTypes = []string{
 
 // Metadata keys read by the mapper and written by [TagMetadata].
 const (
-	MetaAgentID       = "halvor_agent_id"
-	MetaOwnerID       = "halvor_owner_id"
-	MetaOwnerType     = "halvor_owner_type"
-	MetaInstructionID = "halvor_instruction_id"
+	MetaAgentID        = "halvor_agent_id"
+	MetaAgentName      = "halvor_agent_name"
+	MetaAgentFramework = "halvor_agent_framework"
+	MetaOwnerID        = "halvor_owner_id"
+	MetaOwnerType      = "halvor_owner_type"
+	MetaInstructionID  = "halvor_instruction_id"
 )
 
 // Emit maps a raw Stripe webhook body (already signature-checked) and queues it on client.
@@ -249,11 +251,18 @@ func base(eventType, adapter string, created int64, meta map[string]string, paym
 	if meta[MetaOwnerType] == "person" {
 		ownerType = "person"
 	}
+	agent := map[string]any{"id": agentID}
+	if name := meta[MetaAgentName]; name != "" {
+		agent["name"] = truncate(name, 128)
+	}
+	if framework := meta[MetaAgentFramework]; framework != "" {
+		agent["framework"] = truncate(framework, 64)
+	}
 	sha, _ := ingest.EvidenceSHA256(obj)
 	out := map[string]any{
 		"type":     eventType,
 		"source":   map[string]any{"adapter": adapter},
-		"agent":    map[string]any{"id": agentID},
+		"agent":    agent,
 		"owner":    map[string]any{"id": ownerID, "type": ownerType},
 		"payment":  payment,
 		"payee":    payee,
@@ -482,6 +491,8 @@ func mapIssuingTransaction(created int64, obj map[string]any) map[string]any {
 // TagOverrides sets attribution explicitly instead of from the agent context.
 type TagOverrides struct {
 	AgentID       string
+	AgentName     string
+	Framework     string
 	OwnerID       string
 	OwnerType     string
 	InstructionID string
@@ -493,14 +504,21 @@ type TagOverrides struct {
 //
 //	params.Metadata = stripe.TagMetadata(ctx, params.Metadata, stripe.TagOverrides{})
 func TagMetadata(ctx context.Context, metadata map[string]string, overrides TagOverrides) map[string]string {
-	out := make(map[string]string, len(metadata)+4)
+	out := make(map[string]string, len(metadata)+6)
 	for k, v := range metadata {
 		out[k] = v
 	}
 	ac, _ := ingest.AgentContextFrom(ctx)
 	agentID, ownerID, ownerType, instructionID := overrides.AgentID, overrides.OwnerID, overrides.OwnerType, overrides.InstructionID
+	agentName, framework := overrides.AgentName, overrides.Framework
 	if agentID == "" && ac.Agent != nil {
 		agentID = ac.Agent.ID
+	}
+	if agentName == "" && ac.Agent != nil {
+		agentName = ac.Agent.Name
+	}
+	if framework == "" && ac.Agent != nil {
+		framework = ac.Agent.Framework
 	}
 	if ownerID == "" && ac.Owner != nil {
 		ownerID = ac.Owner.ID
@@ -517,6 +535,8 @@ func TagMetadata(ctx context.Context, metadata map[string]string, overrides TagO
 		}
 	}
 	set(MetaAgentID, agentID)
+	set(MetaAgentName, truncate(agentName, 128))
+	set(MetaAgentFramework, truncate(framework, 64))
 	set(MetaOwnerID, ownerID)
 	set(MetaOwnerType, ownerType)
 	set(MetaInstructionID, instructionID)
