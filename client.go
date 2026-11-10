@@ -18,7 +18,7 @@ import (
 )
 
 // Version is the SDK version, reported in every event's source.sdk.
-const Version = "0.1.0"
+const Version = "0.1.1"
 
 // SDKName is the value of source.sdk in every event.
 const SDKName = "go.halvorai.com/ingest@" + Version
