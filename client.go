@@ -505,6 +505,10 @@ func buildInstruction(raw map[string]any) map[string]any {
 	return out
 }
 
+// signedJSONEvidence is JSON evidence that carries a signature over its own fields, so
+// redaction would break it.
+var signedJSONEvidence = map[string]bool{"x402.payment_payload": true}
+
 func (c *Client) redactEvent(event map[string]any) {
 	extra := c.cfg.RedactPatterns
 	redactField := func(obj map[string]any, key string) {
@@ -533,6 +537,10 @@ func (c *Client) redactEvent(event map[string]any) {
 		for _, item := range evidence {
 			e := asMap(item)
 			if e == nil || e["format"] != "json" {
+				continue
+			}
+			// Signed payloads are evidence only while byte-identical; they never hold card numbers.
+			if kind, _ := e["kind"].(string); signedJSONEvidence[kind] {
 				continue
 			}
 			if value, ok := e["value"]; ok && value != nil {

@@ -150,6 +150,8 @@ PaymentIntents, refunds, disputes and Stripe Issuing authorizations and transact
 params.Metadata = stripe.TagMetadata(ctx, params.Metadata, stripe.TagOverrides{})
 ```
 
+This writes `metadata.halvor_*`: the agent's id, name and framework, the owner and the instruction id. Card webhooks carry no other agent name, so the name stored on the card is what the dashboard shows.
+
 ## Develop
 
 ```bash
