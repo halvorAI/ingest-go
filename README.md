@@ -1,5 +1,7 @@
 # HalvorAI Go SDK
 
+> **Frozen as of 17 Nov 2026.** This SDK stays published and `go get go.halvorai.com/ingest` keeps working, but it gets no new features and is no longer kept in step with the JavaScript SDK. For new integrations, use [ingest-js](https://github.com/halvorAI/ingest-js) (Node.js) or [ingest-python](https://github.com/halvorAI/ingest-python). If you need Go, contact us at hello@halvorai.com.
+
 Signed, attributed payment events for AI agents. HalvorAI records each payment an agent makes, with the agent, the owner it acted for, the instruction it followed and the network proof that came with it. It is never in the payment path: it cannot slow or block a payment.
 
 > **Developer preview.** The SDK works offline today: build, sign and inspect events with your own sink. Sandbox API keys go to early-access teams. [Request access](https://halvorai.com/?utm_source=github&utm_campaign=ingest_go#early-access).
@@ -7,7 +9,7 @@ Signed, attributed payment events for AI agents. HalvorAI records each payment a
 - Docs: [docs.halvorai.com](https://docs.halvorai.com)
 - Event format: [Agent Payment Event (APE) v0.1](https://schema.halvorai.com), open and Apache-2.0
 - Go 1.22 or later. No dependencies outside the standard library.
-- Events are byte-identical to the [Node.js](https://github.com/halvorAI/ingest-js) and [Python](https://github.com/halvorAI/ingest-python) SDKs.
+- At v0.1.1, events are byte-identical to the [Node.js](https://github.com/halvorAI/ingest-js) and [Python](https://github.com/halvorAI/ingest-python) SDKs.
 
 ## Install
 
